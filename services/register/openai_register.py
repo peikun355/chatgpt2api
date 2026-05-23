@@ -788,7 +788,10 @@ def worker(index: int) -> dict:
         result = registrar.register(index)
         cost = time.time() - start
         access_token = str(result["access_token"])
-        account_service.add_account_items([result])
+        if hasattr(account_service, "add_account_items"):
+            account_service.add_account_items([result])
+        else:
+            account_service.add_accounts([access_token])
         account_service.refresh_accounts([access_token])
         with stats_lock:
             stats["done"] += 1
